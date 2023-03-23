@@ -1,11 +1,22 @@
+
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkmode: true,
+  // 1. Apply the dark mode class setting:
+  darkMode: 'class',
   content: [
-    "./index.html",
-    "./src/**/*.{svelte,js,ts,jsx,tsx}",
+    './src/**/*.{html,js,svelte,ts}',
+    // 2. Append the path for the Skeleton NPM package and files:
+    require('path').join(require.resolve(
+            '@skeletonlabs/skeleton'),
+        '../**/*.{html,js,svelte,ts}'
+    )
   ],
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    // 3. Append the Skeleton plugin to the end of this list
+    ...require('@skeletonlabs/skeleton/tailwind/skeleton.cjs')()
+  ]
 }
+			
