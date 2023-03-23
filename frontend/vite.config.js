@@ -1,13 +1,12 @@
-import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import postcss from './postcss.config.js';
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  css: {
-    postcss,
-  },
-  plugins: [svelte({
-    /* plugin options */
-  })]
-})
+	plugins: [sveltekit()],
+	server: {
+		proxy: {
+			'/uploads': 'http://localhost:1337',
+			'/api': 'http://localhost:1337',
+		},
+	},
+});
