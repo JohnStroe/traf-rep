@@ -49,7 +49,10 @@ app.post('/ingest', async (req, res) => {
             ...pick(locData),
             [CLIENT_ID_KEY]: clientId
         }));
-        console.log("som")
+
+        if(insertRes.rowCount !== 1)
+            res.status(500).send('database insert error')
+
     } catch (err) {
         console.error(err);
     }
