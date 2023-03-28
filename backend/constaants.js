@@ -18,9 +18,14 @@ const ACCEPTED_LOC_KEYS = [
         "timezone"
 ]
 
+const CONTENT_TYPE = {
+        "Content-Type": "application/json"
+}
+
 module.exports = {
         PORT,
         X_API_KEY,
         ACCEPTED_LOC_KEYS,
-        CLIENT_ID_KEY
+        CLIENT_ID_KEY,
+        CONTENT_TYPE
 }

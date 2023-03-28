@@ -10,12 +10,14 @@ app.use(express.json());
 
 const pgClient = new Client()
 
-app.listen(PORT, async () => {
-    await pgClient.connect()
-    app.pgClient = pgClient
-    console.log('Database connected')
-    console.log(`Server listening on port:${PORT}`)
-})
+const startApp = (port = PORT) => {
+    app.listen(port, async () => {
+        await pgClient.connect()
+        app.pgClient = pgClient
+        console.log('Database connected')
+        console.log(`Server listening on port:${port}`)
+    })
+}
 
 //get request
 /**
@@ -30,7 +32,11 @@ app.post('/ingest', async (req, res) => {
     }
     const clientId = await getClientId(req, res, app.pgClient)
     try{
-        const ip = req.body.ip_address;
+        const ip = req.body["ip_address"];
+        if(!ip){
+            res.status(400).send('invalid ip address');
+            return;
+        }
         const locRes = await fetch(`https://ipapi.co/${ip}/json/`,
              {
                  headers: {
@@ -50,9 +56,13 @@ app.post('/ingest', async (req, res) => {
             [CLIENT_ID_KEY]: clientId
         }));
 
-        if(insertRes.rowCount !== 1)
+        if(insertRes.rowCount !== 1) {
             res.status(500).send('database insert error')
-
+            return
+        }
+        res.send({
+            success: true
+        })
     } catch (err) {
         console.error(err);
     }
@@ -66,15 +76,5 @@ app.get('report/:magicLink',
         const clientId = await getClientId(req, res, app.pgClient)
     });
 
-// punctul 1
-// get http://localhost:3003/clients
-// 100 de clients [
-//      {name: "fffsd"}
-// ]
 
-// punctul 2
-// get http://localhost:3003/client/:id (2, 55, 99)
-// {
-// name: '...'
-//
-// }
+startApp()
